@@ -1,3 +1,4 @@
+#!/bin/sh -e
 # Script to install Ubuntu trusty (14.04 LTS) on Hisense C11 chromebook
 # All rights reserved by the author.
 # Credit: based on ChrUnbutu script s9ryd and Arch Linux ARM
