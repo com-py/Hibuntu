@@ -1,2 +1,2 @@
 # Hibuntu
-Installing Ubunto on Hisense C11 Chromebook
+Installing Ubunto on Hisense C11 ARM Chromebook
