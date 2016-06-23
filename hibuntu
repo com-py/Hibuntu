@@ -1,0 +1,191 @@
+# Script to install Ubuntu trusty (14.04 LTS) on Hisense C11 chromebook
+# All rights reserved by the author.
+# Credit: based on ChrUnbutu script s9ryd and Arch Linux ARM
+# This software is free. Use at your own risk. No warranty of any kind is implied.
+#
+# If you are seeing this in your web browser, save it as "hibuntu" to the "Downloads" folder.
+#             Usage: sudo ~/Downloads/hibuntu /dev/mmcblk1 [or /dev/sda for USB]
+
+script=hibuntu
+hostname=Hibuntu
+username=me
+hwid="`crossystem hwid`"
+chromebook_arch="`uname -mi`"
+ubuntu_arch="armhf"
+  
+echo -e "
+            ****** This software is free. Use at your own risk. No warranty of any kind is implied. ******
+
+Chromebook/Hisense device model is: $hwid; Machine Arch is: $chromebook_arch
+
+Installing Ubuntu 14.04 LTS (trusty, port $ubuntu_arch, aka $hostname) minimal with network manager
+Usage for microSD: sudo $script /dev/mmcblk1; for USB: sudo $script /dev/sda
+
+                                    ****** Preparation Warning ****** 
+It is assumed that you have prepared the target disk (/dev/mmcblk1=microSD, /dev/sda=USB) by following exactly steps 1--9 from
+https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
+If not, abort immediately, prepared the disk, and restart the process.
+This installation starts from step 10 for Ubuntu instead of Arch Linux."
+
+# check target disk
+if [ "$1" != "" ]; then
+	target_disk=$1
+	if test $target_disk = "/dev/mmcblk0"; then
+		echo -e "\nRefusing to install to internal disk $target_disk; exiting\n\a\a"
+		exit
+	elif test $target_disk = "/dev/mmcblk1"; then
+		device="microSD card"
+		kernp="${target_disk}p1"
+		rootp="${target_disk}p2"
+	elif test $target_disk = "/dev/sda"; then
+		device="USB stick"
+		kernp="${target_disk}1"
+		rootp="${target_disk}2"
+	else
+		echo -e "\nUnknown target disk $target_disk\n\a\a"
+		exit
+	fi
+	kstr="`cgpt show -i 1 $target_disk | grep kernel`"
+	dstr="`cgpt show -i 2 $target_disk | grep data`"
+	if [ "$kstr" = "" ] || [ "$dstr" = "" ]; then
+		echo -e "\nTarget disk $target_disk not prepared correctly; exiting\n\a\a"
+		exit
+	fi
+	dsiz="`cgpt show -i 2 $target_disk | grep Label | awk '{print $2}'`"
+	size="`expr $dsiz \* 512 / 1000 / 1000 / 1000`"
+else
+	echo -e "\nNo target disk given; usage: sudo $script /dev/mmcblk1 [or /dev/sda]\n\a\a"
+	exit
+fi
+
+# check ok, ready to install
+
+echo -e "
+                  Your disk checks out OK --- $device $target_disk, usable size $size GB.
+
+Kernel will be installed to $kernp, and OS files to $rootp
+All existing data on target disk --- $device $target_disk --- will be erased!\n"
+
+read -p "Ready to rock... Press [Enter] to continue, Ctrl-C to abort ..."
+
+echo -e "\nStopping powerd to keep display from timing out..."
+initctl stop powerd
+setterm -blank 0
+
+
+cd /tmp
+mkdir kern
+mkdir rootfs
+mount  $rootp rootfs
+echo -e "mount  $rootp rootfs"
+kernname=vmlinux.kpart
+src=http://os.archlinuxarm.org/os/ArchLinuxARM-veyron-latest.tar.gz
+echo -e "\nDownloading kernel (5.8 MB), be patient ......"
+wget -q $src -O - | tar -vzx -C kern | grep -m 1 $kernname | echo
+if [ -f kern/boot/$kernname ]; then
+  	echo -e "...... got it, kernel $kernname found ....\n"
+else
+  	echo -e 'Failed kernel download. Please check source and try again; exiting\n'
+  	exit
+fi
+
+# flash kernel
+echo -e "Flashing kernel to $kernp..."
+dd if=kern/boot/$kernname  of=$kernp
+echo -e "...kernel flashed\n"
+
+echo -e "Downloading Ubuntu 14.04 $ubuntu_arch port..."
+tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/14.04/release/ubuntu-base-14.04.4-core-armhf.tar.gz"
+echo -e "Writing base OS files to $rootp (57 MB)..."
+wget -O - $tar_file | tar xzvp -C rootfs
+echo -e "...base OS files done...\n"
+
+# needed for Hisense C11, may not be necessary for other models
+echo -e "Downloading mwifiex modules ..."
+wget https://goo.gl/xANhPV -O wifimodules.tar.gz
+
+# install ubuntu-minimal by chroot
+
+mount -o bind /proc 	rootfs/proc
+mount -o bind /dev 		rootfs/dev
+mount -o bind /dev/pts 	rootfs/dev/pts
+mount -o bind /sys 		rootfs/sys
+
+cp /etc/resolv.conf rootfs/etc/
+echo -e "$hostname" > rootfs/etc/hostname
+echo -e "\n127.0.1.1       $hostname" >> rootfs/etc/hosts
+add_apt_repository_package='software-properties-common'
+
+# prepare shell script
+echo -e "apt-get -y update
+apt-get -y dist-upgrade
+apt-get -y install ubuntu-minimal
+apt-get -y install network-manager
+apt-get -y install wget
+apt-get -y install $add_apt_repository_package
+add-apt-repository main
+add-apt-repository universe
+add-apt-repository restricted
+add-apt-repository multiverse 
+apt-get update
+if [ -f /usr/lib/lightdm/lightdm-set-defaults ]; then
+	/usr/lib/lightdm/lightdm-set-defaults --autologin $username
+fi
+useradd -m $username -s /bin/bash
+echo $username:root | chpasswd
+adduser $username adm
+adduser $username sudo" > rootfs/install-ubuntu.sh
+chmod a+x rootfs/install-ubuntu.sh
+
+echo -e "\nStarting ubuntu-minimal install, get a cup of tea, will be a while...\n"
+chroot rootfs /bin/bash -c /install-ubuntu.sh
+rm rootfs/install-ubuntu.sh
+
+# copy modules
+KERN_VER=`uname -r`
+mkdir -p rootfs/lib/modules/$KERN_VER/
+cp -ar /lib/modules/$KERN_VER/* /tmp/urfs/lib/modules/$KERN_VER/
+if [ ! -d rootfs/lib/firmware/ ]; then
+  mkdir rootfs/lib/firmware/
+fi
+cp -ar /lib/firmware/* rootfs/lib/firmware/
+tar xf wifimodules.tar.gz -C rootfs/
+
+# change default brightness
+echo -e "echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness" >> rootfs/etc/rc.local
+
+# manually load wireless modules
+echo -e "
+insmod /lib/modules/3.14.0-20-ARCH/mwifiex/cfg80211.ko
+insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex.ko
+insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex_sdio.ko" >> rootfs/etc/rc.local
+
+
+echo -e "
+
+Congratulations! Installation successful 
+After reboot, press Ctrl-U to boot from the $device.
+
+Username:  $username
+Password:  root
+
+To set up wireless after login, scan, connect, and check connections with these commands: 
+nmcli dev wifi
+nmcli dev wifi con \"your_net ssid\" password your_net_password  name \"My cafe\"
+nmcli dev status
+
+Once you have a connection, you can add more stuff. 
+For example, to add the xfce desktop and assorted programs including firefox, do:
+sudo apt-get install openbox xubuntu-desktop
+
+If booting from the $device fails (black screen), hold down the power button
+for 10 seconds to power off, then turn it back on to login Chrome OS.
+
+Ready to start Hibuntu!
+"
+
+read -p "Press [Enter] to reboot..."
+
+umount rootfs
+sync
+reboot
