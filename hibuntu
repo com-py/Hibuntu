@@ -1,14 +1,13 @@
-#!/bin/sh -e
 # Script to install Ubuntu trusty (14.04 LTS) on Hisense C11 chromebook
 # All rights reserved by the author.
-# Credit: based on ChrUnbutu script s9ryd and Arch Linux ARM
+# Credit: based on ChrUnbutu and Arch Linux ARM
 # This software is free. Use at your own risk. No warranty of any kind is implied.
 #
 # If you are seeing this in your web browser, save it as "hibuntu" to the "Downloads" folder.
-#             Usage: sudo ~/Downloads/hibuntu /dev/mmcblk1 [or /dev/sda for USB]
+#             Usage: sudo ~/Downloads/hibuntu /dev/mmcblk1   [or /dev/sda for USB]
 
 script=hibuntu
-hostname=Hibuntu
+hostname=hibuntu
 username=me
 hwid="`crossystem hwid`"
 chromebook_arch="`uname -mi`"
@@ -26,7 +25,7 @@ Usage for microSD: sudo $script /dev/mmcblk1; for USB: sudo $script /dev/sda
 It is assumed that you have prepared the target disk (/dev/mmcblk1=microSD, /dev/sda=USB) by following exactly steps 1--9 from
 https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 If not, abort immediately, prepared the disk, and restart the process.
-This installation starts from step 10 for Ubuntu instead of Arch Linux."
+This installation starts from step 10 for installing Ubuntu instead of Arch Linux."
 
 # check target disk
 if [ "$1" != "" ]; then
@@ -62,18 +61,19 @@ fi
 # check ok, ready to install
 
 echo -e "
-                  Your disk checks out OK --- $device $target_disk, usable size $size GB.
+                  Your disk checks out OK --- $device $target_disk, usable size ~ $size GB.
 
 Kernel will be installed to $kernp, and OS files to $rootp
 All existing data on target disk --- $device $target_disk --- will be erased!\n"
 
 read -p "Ready to rock... Press [Enter] to continue, Ctrl-C to abort ..."
 
-echo -e "\nStopping powerd to keep display from timing out..."
-initctl stop powerd
-setterm -blank 0
+##echo -e "\nStopping powerd to keep display from timing out..."
+##initctl stop powerd
+##setterm -blank 0
 
-
+umount $target_disk*
+mkfs.ext4 -F $rootp
 cd /tmp
 mkdir kern
 mkdir rootfs
@@ -93,7 +93,14 @@ fi
 # flash kernel
 echo -e "Flashing kernel to $kernp..."
 dd if=kern/boot/$kernname  of=$kernp
-echo -e "...kernel flashed\n"
+echo -e "
+...kernel flashed successfully.
+
+This should be the last input from you. If you are asked for input later, just hit Enter.
+Depending on internet and $device speeds, it can take anywhere from 30 min to 1 hour+.
+So relax, and ignore harmless Locale warnings.\n"
+
+read -p "Ready to proceed; Press [Enter] to continue ..."
 
 echo -e "Downloading Ubuntu 14.04 $ubuntu_arch port..."
 tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/14.04/release/ubuntu-base-14.04.4-core-armhf.tar.gz"
@@ -107,10 +114,10 @@ wget https://goo.gl/xANhPV -O wifimodules.tar.gz
 
 # install ubuntu-minimal by chroot
 
-mount -o bind /proc 	rootfs/proc
-mount -o bind /dev 		rootfs/dev
-mount -o bind /dev/pts 	rootfs/dev/pts
-mount -o bind /sys 		rootfs/sys
+mount -o bind /proc    rootfs/proc
+mount -o bind /dev     rootfs/dev
+mount -o bind /dev/pts rootfs/dev/pts
+mount -o bind /sys     rootfs/sys
 
 cp /etc/resolv.conf rootfs/etc/
 echo -e "$hostname" > rootfs/etc/hostname
@@ -135,58 +142,65 @@ fi
 useradd -m $username -s /bin/bash
 echo $username:root | chpasswd
 adduser $username adm
-adduser $username sudo" > rootfs/install-ubuntu.sh
-chmod a+x rootfs/install-ubuntu.sh
+adduser $username sudo" > rootfs/hibuntu.sh
+chmod a+x rootfs/hibuntu.sh
 
-echo -e "\nStarting ubuntu-minimal install, get a cup of tea, will be a while...\n"
-chroot rootfs /bin/bash -c /install-ubuntu.sh
-rm rootfs/install-ubuntu.sh
+echo -e "\n             Starting ubuntu-minimal install, get a cup of tea, will be a while...\n"
+chroot rootfs /bin/bash -c /hibuntu.sh
+
+echo -e "Wait 5 seconds..."
+sleep 5
+rm rootfs/hibuntu.sh
 
 # copy modules
-KERN_VER=`uname -r`
-mkdir -p rootfs/lib/modules/$KERN_VER/
-cp -ar /lib/modules/$KERN_VER/* /tmp/urfs/lib/modules/$KERN_VER/
+syskern=`uname -r`
+mkdir -p rootfs/lib/modules/$syskern/
+cp -ar /lib/modules/$syskern/* rootfs/lib/modules/$syskern/
 if [ ! -d rootfs/lib/firmware/ ]; then
   mkdir rootfs/lib/firmware/
 fi
 cp -ar /lib/firmware/* rootfs/lib/firmware/
 tar xf wifimodules.tar.gz -C rootfs/
 
-# change default brightness
-echo -e "echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness" >> rootfs/etc/rc.local
+# change default brightness, insert before last line
+sed -i '$i echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness' rootfs/etc/rc.local
 
-# manually load wireless modules
-echo -e "
-insmod /lib/modules/3.14.0-20-ARCH/mwifiex/cfg80211.ko
-insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex.ko
-insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex_sdio.ko" >> rootfs/etc/rc.local
+# load wireless modules; order important
+sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/cfg80211.ko' rootfs/etc/rc.local
+sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex.ko' rootfs/etc/rc.local
+sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex_sdio.ko' rootfs/etc/rc.local
 
 
 echo -e "
 
 Congratulations! Installation successful 
-After reboot, press Ctrl-U to boot from the $device.
+After reboot, press Ctrl-U to boot from the $device. 
+If it beeps, just power off and on again. Make sure your $device is the only one plugged in.
 
 Username:  $username
 Password:  root
 
-To set up wireless after login, scan, connect, and check connections with these commands: 
-nmcli dev wifi
-nmcli dev wifi con \"your_net ssid\" password your_net_password  name \"My cafe\"
-nmcli dev status
+To set up wireless after login, use these commands to scan, connect, and check connections: 
+                             __________________________________
+ ==========================  Please jot this down for reference  =========================
+|    nmcli dev wifi                                                                       |
+|    sudo nmcli dev wifi con \"your_net ssid\" password \"your_net_password\"  name \"My wifi\" |
+|    nmcli dev status                                                                     |
+ =========================================================================================
 
 Once you have a connection, you can add more stuff. 
 For example, to add the xfce desktop and assorted programs including firefox, do:
 sudo apt-get install openbox xubuntu-desktop
 
 If booting from the $device fails (black screen), hold down the power button
-for 10 seconds to power off, then turn it back on to login Chrome OS.
+for 10 seconds to power off, then turn it back on to login to Chrome OS.
 
 Ready to start Hibuntu!
 "
 
-read -p "Press [Enter] to reboot..."
-
 umount rootfs
 sync
+
+read -p "Press [Enter] to reboot; then wait for the $device to unmount..."
+
 reboot
