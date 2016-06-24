@@ -5,7 +5,7 @@
 # This software is free. Use at your own risk. No warranty of any kind is implied.
 #
 # If you are seeing this in your web browser, save it as "hibuntu" to the "Downloads" folder.
-#             Usage: sudo ~/Downloads/hibuntu /dev/mmcblk1   [or /dev/sda for USB]
+#             Usage: sudo bash ~/Downloads/hibuntu /dev/mmcblk1   [or /dev/sda for USB]
 script=hibuntu
 hostname=hibuntu
 username=me
