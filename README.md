@@ -12,9 +12,11 @@ system on a nice, little and light machine like the Hisense C11.
 Requirements: A microSD card or USB stick, wifi connection, and a Hisense C11 or alike (duh)
 
   1. 	Set up developer mode and format your card/stick, following exact steps 1-9 given here:
+  	
 	https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 	
-By the way, if you want Arch Linux, do no more. I prefer Ubuntu. 
+	By the way, if you want Arch Linux, do no more. I prefer Ubuntu. 
+
 Next, make sure the device you want Ubuntu on is the only external device plugged in.
 Power the chromebook off then on, press Ctrl-D at OS verification screen, do not sign in yet.
 
@@ -36,13 +38,14 @@ It is assumed you have a microSD card. For USB, replace /dev/mmcblk1 with /dev/s
 ```
 It should take ~ 30 min, and done!
 
-Post installation:
+## Post installation:
+
 After reboot, press Ctrl-U to boot from the external device. 
 If it beeps, just power off and on again. Make sure your device is the only one plugged in.
-
+```
 Username:  me
 Password:  root
-
+```
 To set up wireless after the first login, use these commands to scan, connect, 
 and check connections; it's handy to jot these down:
 ```
