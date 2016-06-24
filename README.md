@@ -11,25 +11,25 @@ system on a nice, little and light machine like the Hisense C11.
 
 **Requirements**: A microSD card or USB stick, wifi connection, and a Hisense C11 or alike (duh)
 
-  **1.** 	Set up developer mode and format your card/stick, following exact steps 1-9 given here:
+**1.** 	Set up developer mode and format your card/stick, following exact steps 1-9 given here:
   	
-	https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
+https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 	
-	By the way, if you want Arch Linux, do no more. I prefer Ubuntu. 
+By the way, if you want Arch Linux, do no more. I prefer Ubuntu. 
 
 Next, make sure the device you want Ubuntu on is the only external device plugged in.
 Power the chromebook off then on, press `Ctrl-D` at OS verification screen, do not sign in yet.
 
 Choose either 2a or 2b. I recommend 2a because it reduces ChromeOS inteference.
-It is assumed you have a microSD card. For USB, replace /dev/mmcblk1 with /dev/sda
+It is assumed you have a microSD card. For USB, replace `/dev/mmcblk1` with `/dev/sda`
 
-  **2a.**	Press `Alt-Ctrl-F2` (right arrow on top of keyboard) to login as chronos
+**2a.**	Press `Alt-Ctrl-F2` (right arrow on top of keyboard) to login as chronos
 	At the `$` prompt, enter two commands:
 ```
 	wget -q https://goo.gl/w1uFvM -O hibuntu
 	sudo bash hibuntu /dev/mmcblk1
 ```
-  **2b.** Sign in the chromebook, download the script at https://goo.gl/w1uFvM,
+**2b.** Sign in the chromebook, download the script at https://goo.gl/w1uFvM,
 	make sure to save it as hibuntu to the Downloads folder.
 	Press `Alt-Ctrl-t` to get into the terminal, issue two commands:
 ```
