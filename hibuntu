@@ -22,10 +22,10 @@ Installing Ubuntu 14.04 LTS (trusty, port $ubuntu_arch, aka $hostname) minimal w
 Usage for microSD: sudo $script /dev/mmcblk1; for USB: sudo $script /dev/sda
 
                                     ****** Preparation Warning ****** 
-It is assumed that you have prepared the target disk (/dev/mmcblk1=microSD, /dev/sda=USB) by following exactly steps 1--9 from
+It is assumed that you have prepared the target disk (/dev/mmcblk1=microSD, /dev/sda=USB) by following exactly steps 1--8 from
 https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 If not, abort immediately, prepared the disk, and restart the process.
-This installation starts from step 10 for installing Ubuntu instead of Arch Linux."
+This installation starts from step 9 for installing Ubuntu instead of Arch Linux."
 
 # check target disk
 if [ "$1" != "" ]; then
