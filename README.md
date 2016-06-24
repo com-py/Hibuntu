@@ -6,7 +6,7 @@
 The script automates installing Ubuntu on Rockchip ARM chromebooks like the Hisense C11.
 It is similar to ChrUbuntu but uses Arch Linux ARM kernel and Ubuntu 14.04 LTS (trusty).
 Either a microSD or USB stick can be used. I recommend the microSD option (16 or 32 GB)
-becuase it fits flush on the Hisense C11 and can be very fast. You can have a dual-boot, full Linux
+because it fits flush on the Hisense C11 and can be very fast. You can have a dual-boot, full Linux
 system on a nice, little and light machine like the Hisense C11.
 
 **Requirements**: A microSD card or USB stick, wifi connection, and a Hisense C11 or alike (duh)
@@ -20,7 +20,7 @@ By the way, if you want Arch Linux, do no more. I prefer Ubuntu.
 Next, make sure the device you want Ubuntu on is the only external device plugged in.
 Power the chromebook off then on, press `Ctrl-D` at OS verification screen, do not sign in yet.
 
-Choose either 2a or 2b. I recommend 2a because it reduces ChromeOS inteference.
+Choose either 2a or 2b. I recommend 2a because it reduces ChromeOS interference.
 It is assumed you have a microSD card. For USB, replace `/dev/mmcblk1` with `/dev/sda`
 
 **2a.**	Press `Alt-Ctrl-F2` (right arrow on top of keyboard) to login as chronos
