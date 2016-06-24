@@ -1,11 +1,11 @@
 # Script to install Ubuntu trusty (14.04 LTS) on Hisense C11 chromebook
-# All rights reserved by the author.
+# All rights reserved by the author
+# https://github.com/com-py/Hibuntu
 # Credit: based on ChrUnbutu and Arch Linux ARM
 # This software is free. Use at your own risk. No warranty of any kind is implied.
 #
 # If you are seeing this in your web browser, save it as "hibuntu" to the "Downloads" folder.
 #             Usage: sudo ~/Downloads/hibuntu /dev/mmcblk1   [or /dev/sda for USB]
-
 script=hibuntu
 hostname=hibuntu
 username=me
@@ -66,11 +66,10 @@ echo -e "
 Kernel will be installed to $kernp, and OS files to $rootp
 All existing data on target disk --- $device $target_disk --- will be erased!\n"
 
-read -p "Ready to rock... Press [Enter] to continue, Ctrl-C to abort ..."
+read -p "Ready to Rock... Press [Enter] to continue, Ctrl-C to abort ..."
 
-##echo -e "\nStopping powerd to keep display from timing out..."
-##initctl stop powerd
-##setterm -blank 0
+echo -e "\nStopping powerd to keep display from timing out..."
+initctl stop powerd
 
 umount $target_disk*
 mkfs.ext4 -F $rootp
@@ -96,9 +95,9 @@ dd if=kern/boot/$kernname  of=$kernp
 echo -e "
 ...kernel flashed successfully.
 
-This should be the last input from you. If you are asked for input later, just hit Enter.
+Up next are 3 stages: ubuntu base, base update, and ubuntu-minimal+network manager
 Depending on internet and $device speeds, it can take anywhere from 30 min to 1 hour+.
-So relax, and ignore harmless Locale warnings.\n"
+So sit back, relax, and ignore harmless Locale warnings.\n"
 
 read -p "Ready to proceed; Press [Enter] to continue ..."
 
@@ -194,6 +193,7 @@ sudo apt-get install openbox xubuntu-desktop
 
 If booting from the $device fails (black screen), hold down the power button
 for 10 seconds to power off, then turn it back on to login to Chrome OS.
+Check for latest update at https://github.com/com-py/Hibuntu
 
 Ready to start Hibuntu!
 "
