@@ -31,7 +31,7 @@ It is assumed you have a microSD card. For USB, replace `/dev/mmcblk1` with `/de
 ```
 **2b.** Sign in the chromebook, download the script at https://goo.gl/w1uFvM,
 	make sure to save it as **hibuntu** to the Downloads folder.
-	Press `Alt-Ctrl-t` to get into the terminal, issue two commands:
+	Now, press `Alt-Ctrl-t` to get into the terminal, issue two commands:
 ```
 	shell
 	sudo bash ~/Downloads/hibuntu /dev/mmcblk1
