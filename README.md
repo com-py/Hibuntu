@@ -9,9 +9,9 @@ Either a microSD or USB stick can be used. I recommend the microSD option (16 or
 becuase it fits flush on the Hisense C11 and can be very fast. You can have a full Linux
 system on a nice, little and light machine like the Hisense C11.
 
-Requirements: A microSD card or USB stick, wifi connection, and a Hisense C11 or alike (duh)
+**Requirements**: A microSD card or USB stick, wifi connection, and a Hisense C11 or alike (duh)
 
-  1. 	Set up developer mode and format your card/stick, following exact steps 1-9 given here:
+  **1.** 	Set up developer mode and format your card/stick, following exact steps 1-9 given here:
   	
 	https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 	
@@ -23,13 +23,13 @@ Power the chromebook off then on, press `Ctrl-D` at OS verification screen, do n
 Choose either 2a or 2b. I recommend 2a because it reduces ChromeOS inteference.
 It is assumed you have a microSD card. For USB, replace /dev/mmcblk1 with /dev/sda
 
-  2a.	Press `Alt-Ctrl-F2` (right arrow on top of keyboard) to login as chronos
+  **2a.**	Press `Alt-Ctrl-F2` (right arrow on top of keyboard) to login as chronos
 	At the `$` prompt, enter two commands:
 ```
 	wget -q https://goo.gl/w1uFvM -O hibuntu
 	sudo bash hibuntu /dev/mmcblk1
 ```
-  2b. Sign in the chromebook, download the script at https://goo.gl/w1uFvM,
+  **2b.** Sign in the chromebook, download the script at https://goo.gl/w1uFvM,
 	make sure to save it as hibuntu to the Downloads folder.
 	Press `Alt-Ctrl-t` to get into the terminal, issue two commands:
 ```
@@ -38,7 +38,7 @@ It is assumed you have a microSD card. For USB, replace /dev/mmcblk1 with /dev/s
 ```
 It should take ~ 30 min, and done!
 
-## Post installation:
+### Post installation:
 
 After reboot, press `Ctrl-U` to boot from the external device. 
 If it beeps, just power off and on again. Make sure your device is the only one plugged in.
@@ -49,9 +49,9 @@ Password:  root
 To set up wireless after the first login, use these commands to scan, connect, 
 and check connections; it's handy to jot these down:
 ```
-	nmcli dev wifi
-	sudo nmcli dev wifi con "your_net ssid" password "your_net_password" name "My wifi"
-	nmcli dev status
+nmcli dev wifi
+sudo nmcli dev wifi con "your_net ssid" password "your_net_password" name "My wifi"
+nmcli dev status
 ```
 Once you have a connection, you can add more stuff. 
 For example, to add the xfce desktop and assorted programs including firefox, do:
