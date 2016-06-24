@@ -11,7 +11,7 @@ system on a nice, little and light machine like the Hisense C11.
 
 **Requirements**: A microSD card or USB stick, wifi connection, and a Hisense C11 or alike (duh)
 
-**1.** 	Set up developer mode and format your card/stick, following exact steps 1-9 given here:
+**1.** 	Set up developer mode and format your card/stick, following exact steps 1-8 given here:
   	
 https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 	
