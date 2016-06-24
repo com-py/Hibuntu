@@ -23,13 +23,13 @@ Power the chromebook off then on, press Ctrl-D at OS verification screen, do not
 Choose either 2a or 2b. I recommend 2a because it reduces ChromeOS inteference.
 It is assumed you have a microSD card. For USB, replace /dev/mmcblk1 with /dev/sda
 
-  2a:	Press Alt-Ctrl-F2 (right arrow on top of keyboard) to login as chronos
+  2a.	Press Alt-Ctrl-F2 (right arrow on top of keyboard) to login as chronos
 	At the $ prompt, enter two commands:
 ```
 	wget -q https://goo.gl/w1uFvM -O hibuntu
 	sudo bash hibuntu /dev/mmcblk1
 ```
-  2b: Sign in the chromebook, download the script at https://goo.gl/w1uFvM,
+  2b. Sign in the chromebook, download the script at https://goo.gl/w1uFvM,
 	make sure to save it as hibuntu to the Downloads folder.
 	Press Alt-Ctrl-t to get into the terminal, issue two commands:
 ```
