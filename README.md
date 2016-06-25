@@ -23,7 +23,7 @@ Power the chromebook off then on, press `Ctrl-D` at OS verification screen, do n
 Choose either 2a or 2b. I recommend 2a because it reduces ChromeOS interference.
 It is assumed you have a microSD card. For USB, replace `/dev/mmcblk1` with `/dev/sda`
 
-**2a.**	Press `Alt-Ctrl-F2` (right arrow on top of keyboard) to login as chronos
+**2a.**	Press `Alt-Ctrl-F2` (right arrow on top of keyboard) to login as chronos.
 	At the `$` prompt, enter two commands:
 ```
 	wget -q https://goo.gl/w1uFvM -O hibuntu
