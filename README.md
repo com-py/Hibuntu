@@ -69,10 +69,10 @@ sudo apt-get install openbox xubuntu-desktop
 Finally, to check brightness, do:
 `cat /sys/devices/backlight.20/backlight/backlight.20/brightness`
 
-To change brightness (replace 40 by any value 0 to 100):
+and to change brightness (replace 40 by any value 0 to 100):
 ```
 sudo chmod 666 /sys/devices/backlight.20/backlight/backlight.20/brightness
 sudo echo "40" > /sys/devices/backlight.20/backlight/backlight.20/brightness
 sudo chmod 644 /sys/devices/backlight.20/backlight/backlight.20/brightness
 ```
-You can also put it in a script and bind it to a function key for easier use.
+You can put it in a script and bind it to a function key for easier use.
