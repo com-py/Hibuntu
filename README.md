@@ -53,8 +53,28 @@ nmcli dev wifi
 sudo nmcli dev wifi con "your_net ssid" password "your_net_password" name "My wifi"
 nmcli dev status
 ```
+Wifi powersave can cause connection drops. To turn it off, issue:
+```
+sudo iw dev mlan0 set power_save off
+```
+To make it permanent, save the following as an executable `wifipoff` file in the path `/etc/pm/power.d/`
+```
+#!/bin/sh
+/sbin/iw dev mlan0 set power_save off
+```
 Once you have a connection, you can add more stuff. 
 For example, to add the xfce desktop and assorted programs including firefox, do:
 ```
 sudo apt-get install openbox xubuntu-desktop
 ```
+Finally, to check brightness, do:
+```
+cat /sys/devices/backlight.20/backlight/backlight.20/brightness
+```
+To change brightness (replace 40 by any value 0 to 100):
+```
+sudo chmod 666 /sys/devices/backlight.20/backlight/backlight.20/brightness
+sudo echo "40" > /sys/devices/backlight.20/backlight/backlight.20/brightness
+sudo chmod 644 /sys/devices/backlight.20/backlight/backlight.20/brightness
+```
+You can also put it in a script and bind it to a function key for easier use.
