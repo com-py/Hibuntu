@@ -79,7 +79,9 @@ mkdir rootfs
 mount  $rootp rootfs
 echo -e "mount  $rootp rootfs"
 kernname=vmlinux.kpart
-src=http://os.archlinuxarm.org/os/ArchLinuxARM-veyron-latest.tar.gz
+# src=http://os.archlinuxarm.org/os/ArchLinuxARM-veyron-latest.tar.gz
+# use compatible version 3.14-20
+src=https://github.com/com-py/Hibuntu/raw/master/alarm-kernel-3.14-20.tar.gz
 echo -e "\nDownloading kernel (5.8 MB), be patient ......"
 wget -q $src -O - | tar -vzx -C kern | grep -m 1 $kernname | echo
 if [ -f kern/boot/$kernname ]; then
