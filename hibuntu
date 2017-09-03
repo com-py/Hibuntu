@@ -75,6 +75,7 @@ umount $target_disk*
 mkfs.ext4 -F $rootp
 cd /tmp
 mkdir kern
+mkdir kern/boot
 mkdir rootfs
 mount  $rootp rootfs
 echo -e "mount  $rootp rootfs"
@@ -83,7 +84,7 @@ kernname=vmlinux.kpart
 # use compatible version 3.14-20
 src=https://github.com/com-py/Hibuntu/raw/master/alarm-kernel-3.14-20.tar.gz
 echo -e "\nDownloading kernel (5.8 MB), be patient ......"
-wget -q $src -O - | tar -vzx -C kern | grep -m 1 $kernname | echo
+wget -q $src -O - | tar -vzx -C kern/boot | grep -m 1 $kernname | echo
 if [ -f kern/boot/$kernname ]; then
   	echo -e "...... got it, kernel $kernname found ....\n"
 else
