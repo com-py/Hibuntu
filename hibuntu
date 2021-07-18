@@ -97,8 +97,6 @@ mkdir rootfs
 mount  $rootp rootfs
 echo -e "mount  $rootp rootfs"
 kernname=vmlinux.kpart
-# src=http://os.archlinuxarm.org/os/ArchLinuxARM-veyron-latest.tar.gz
-# use compatible version 3.14-20
 src=https://github.com/philoteer/Hibuntu/raw/master/vmlinux.kpart.tar.gz
 echo -e "\nDownloading kernel (5.8 MB), be patient ......"
 curl -L $src | tar -vzx -C kern/boot | grep -m 1 $kernname | echo
@@ -127,11 +125,6 @@ tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/14.04/release/ubuntu-ba
 echo -e "Writing base OS files to $rootp (some MB)..."
 curl -L $tar_file | tar xzvp -C rootfs
 echo -e "...base OS files done...\n"
-
-# needed for Hisense C11, may not be necessary for other models
-# TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-echo -e "Downloading mwifiex modules ..."
-curl -L https://github.com/philoteer/Hibuntu/raw/master/wifimodules.tar.gz -o wifimodules.tar.gz
 
 # install ubuntu-minimal by chroot
 
@@ -174,10 +167,6 @@ sleep 5
 rm rootfs/hibuntu.sh
 
 # copy modules
-#syskern=`uname -r`
-#mkdir -p rootfs/lib/modules/$syskern/
-#cp -ar /lib/modules/$syskern/* rootfs/lib/modules/$syskern/
-
 mkdir -p rootfs/lib/modules
 src=https://github.com/philoteer/Hibuntu/raw/master/modules.tar.gz
 echo -e "\nDownloading modules, be patient ......"
@@ -185,12 +174,21 @@ curl -L $src -o rootfs/lib/modules/modules.tar.gz
 tar -xf rootfs/lib/modules/modules.tar.gz -C rootfs/lib/modules/
 rm rootfs/lib/modules/modules.tar.gz
 
+# copy firmwares
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+#echo -e "Downloading mwifiex modules ..."
+#curl -L https://github.com/philoteer/Hibuntu/raw/master/wifimodules.tar.gz -o wifimodules.tar.gz
 if [ ! -d rootfs/lib/firmware/ ]; then
   mkdir rootfs/lib/firmware/
 fi
-cp -ar /lib/firmware/* rootfs/lib/firmware/
-tar xf wifimodules.tar.gz -C rootfs/
+
+src=https://github.com/philoteer/Hibuntu/raw/master/firmware.tar.gz
+echo -e "\nDownloading firmwares, be patient ......"
+curl -L $src -o rootfs/firmware.tar.gz
+tar -xf rootfs/firmware.tar.gz -C rootfs/firmware/
+rm rootfs/firmware.tar.gz
+#cp -ar /lib/firmware/* rootfs/lib/firmware/
+#tar xf wifimodules.tar.gz -C rootfs/
 
 # change default brightness, insert before last line
 sed -i '$i echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness' rootfs/etc/rc.local
