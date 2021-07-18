@@ -183,6 +183,8 @@ echo -e "\n copying modules"
 cp -ar rootfs/arch_rootfs/lib/modules/* rootfs/lib/modules/
 cp -ar rootfs/arch_rootfs/lib/firmware/* rootfs/lib/firmware/
 rm -rf rootfs/arch_rootfs
+gunzip -r rootfs/lib/modules/3.14.0-26-ARCH/kernel/
+chroot rootfs /bin/bash -c "depmod 3.14.0-26-ARCH"
 
 # copy firmwares
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
