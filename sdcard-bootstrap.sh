@@ -2,6 +2,12 @@
 #set -x
 DEV="/dev/mmcblk0"
 
+chk="`cgpt show -i 10 ${DEV} | grep Unused`"
+if [ "$chk" = "" ]; then
+  echo -e "\nPartition table does not look correct - is this the internal eMMC? \n\a\a"
+  exit
+fi
+
 umount ${DEV}*
 
 fdisk ${DEV} <<EEOF
