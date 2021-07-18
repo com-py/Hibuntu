@@ -183,6 +183,7 @@ src=https://github.com/philoteer/Hibuntu/raw/master/modules.tar.gz
 echo -e "\nDownloading modules, be patient ......"
 curl -L $src -o rootfs/lib/modules/modules.tar.gz
 tar -xf rootfs/lib/modules/modules.tar.gz -C rootfs/lib/modules/
+rm rootfs/lib/modules/modules.tar.gz
 
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 if [ ! -d rootfs/lib/firmware/ ]; then
