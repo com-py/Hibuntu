@@ -1,4 +1,5 @@
 #!/bin/sh
+#adapted from: https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11 
 #set -x
 DEV="/dev/mmcblk0"
 
