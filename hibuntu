@@ -9,7 +9,13 @@
 
 script=hibuntu
 hostname=hibuntu
-username=me
+
+if [ "$2" != "" ]; then
+	username=$2
+else
+	username=me
+fi
+
 hwid="`crossystem hwid`"
 chromebook_arch="`uname -mi`"
 ubuntu_arch="armhf"
@@ -123,6 +129,7 @@ wget -O - $tar_file | tar xzvp -C rootfs
 echo -e "...base OS files done...\n"
 
 # needed for Hisense C11, may not be necessary for other models
+# TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 echo -e "Downloading mwifiex modules ..."
 wget https://goo.gl/xANhPV -O wifimodules.tar.gz
 
@@ -167,9 +174,16 @@ sleep 5
 rm rootfs/hibuntu.sh
 
 # copy modules
-syskern=`uname -r`
-mkdir -p rootfs/lib/modules/$syskern/
-cp -ar /lib/modules/$syskern/* rootfs/lib/modules/$syskern/
+#syskern=`uname -r`
+#mkdir -p rootfs/lib/modules/$syskern/
+#cp -ar /lib/modules/$syskern/* rootfs/lib/modules/$syskern/
+src=https://github.com/philoteer/Hibuntu/raw/master/modules.tar.gz
+echo -e "\nDownloading modules, be patient ......"
+wget $src
+mv modules.tar.gz rootfs/lib/modules
+tar -xf rootfs/lib/modules/modules.tar.gz
+
+# TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 if [ ! -d rootfs/lib/firmware/ ]; then
   mkdir rootfs/lib/firmware/
 fi
@@ -180,9 +194,10 @@ tar xf wifimodules.tar.gz -C rootfs/
 sed -i '$i echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness' rootfs/etc/rc.local
 
 # load wireless modules; order important
-sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/cfg80211.ko' rootfs/etc/rc.local
-sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex.ko' rootfs/etc/rc.local
-sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex_sdio.ko' rootfs/etc/rc.local
+# TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+#sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/cfg80211.ko' rootfs/etc/rc.local
+#sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex.ko' rootfs/etc/rc.local
+#sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex_sdio.ko' rootfs/etc/rc.local
 
 
 echo -e "
