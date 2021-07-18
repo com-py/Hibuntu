@@ -166,27 +166,29 @@ echo -e "Wait 5 seconds..."
 sleep 5
 rm rootfs/hibuntu.sh
 
-# copy modules
+# copy modules and firmwares from arch img
 mkdir -p rootfs/lib/modules
-src=https://github.com/philoteer/Hibuntu/raw/master/modules.tar.gz
-echo -e "\nDownloading modules, be patient ......"
-curl -L $src -o rootfs/lib/modules/modules.tar.gz
-tar -xf rootfs/lib/modules/modules.tar.gz -C rootfs/lib/modules/
-rm rootfs/lib/modules/modules.tar.gz
+mkdir -p rootfs/lib/firmware
+mkdir -p rootfs/arch_rootfs
+src=http://mirror.nus.edu.sg/archlinux-arm/os/ArchLinuxARM-veyron-latest.tar.gz
+tgt=rootfs/arch_rootfs.tar.gz
+
+echo -e "\nDownloading arch rootfs, be patient ......"
+curl -L $src -o ${tgt}
+echo -e "\nuntarring arch rootfs"
+tar -xf ${tgt} -C rootfs/arch_rootfs/
+rm  ${tgt}
+
+echo -e "\n copying modules"
+cp -ar rootfs/arch_rootfs/lib/modules/* rootfs/lib/modules/
+cp -ar rootfs/arch_rootfs/lib/firmware/* rootfs/lib/firmware/
+rm -rf rootfs/arch_rootfs
 
 # copy firmwares
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 #echo -e "Downloading mwifiex modules ..."
 #curl -L https://github.com/philoteer/Hibuntu/raw/master/wifimodules.tar.gz -o wifimodules.tar.gz
-if [ ! -d rootfs/lib/firmware/ ]; then
-  mkdir rootfs/lib/firmware/
-fi
 
-src=https://github.com/philoteer/Hibuntu/raw/master/firmware.tar.gz
-echo -e "\nDownloading firmwares, be patient ......"
-curl -L $src -o rootfs/firmware.tar.gz
-tar -xf rootfs/firmware.tar.gz -C rootfs/firmware/
-rm rootfs/firmware.tar.gz
 #cp -ar /lib/firmware/* rootfs/lib/firmware/
 #tar xf wifimodules.tar.gz -C rootfs/
 
