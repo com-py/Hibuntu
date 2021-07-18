@@ -141,7 +141,7 @@ add_apt_repository_package='software-properties-common'
 # prepare shell script
 echo -e "apt-get -y update
 apt-get -y dist-upgrade
-apt-get -y install ubuntu-minimal
+apt-get -y install ubuntu-minimal apt-utils
 apt-get -y install network-manager
 apt-get -y install wget
 apt-get -y install $add_apt_repository_package
