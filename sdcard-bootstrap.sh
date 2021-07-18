@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+#set -x
 DEV="/dev/mmcblk0"
 
 umount ${DEV}*
