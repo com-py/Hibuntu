@@ -93,7 +93,7 @@ echo -e "mount  $rootp rootfs"
 kernname=vmlinux.kpart
 # src=http://os.archlinuxarm.org/os/ArchLinuxARM-veyron-latest.tar.gz
 # use compatible version 3.14-20
-src=https://github.com/com-py/Hibuntu/raw/master/alarm-kernel-3.14-20.tar.gz
+src=https://github.com/philoteer/Hibuntu/raw/master/vmlinux.kpart.tar.gz
 echo -e "\nDownloading kernel (5.8 MB), be patient ......"
 wget -q $src -O - | tar -vzx -C kern/boot | grep -m 1 $kernname | echo
 if [ -f kern/boot/$kernname ]; then
@@ -115,9 +115,10 @@ So sit back, relax, and ignore harmless Locale warnings.\n"
 
 read -p "Ready to proceed; Press [Enter] to continue ..."
 
-echo -e "Downloading Ubuntu 14.04 $ubuntu_arch port..."
-tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/14.04/release/ubuntu-base-14.04.4-core-armhf.tar.gz"
-echo -e "Writing base OS files to $rootp (57 MB)..."
+echo -e "Downloading Ubuntu $ubuntu_arch port..."
+#tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/14.04/release/ubuntu-base-14.04.4-core-armhf.tar.gz"
+tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.2-base-armhf.tar.gz"
+echo -e "Writing base OS files to $rootp (some MB)..."
 wget -O - $tar_file | tar xzvp -C rootfs
 echo -e "...base OS files done...\n"
 
