@@ -1,3 +1,7 @@
+# WIP (Needs Modifications)
+# Original Project: https://github.com/com-py/Hibuntu
+
+-----------------------------------------------------------------------------------------------------------------------
 # Hibuntu
 ## Installing Ubuntu on Hisense C11 ARM Chromebook
 
