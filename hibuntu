@@ -6,6 +6,7 @@
 #
 # If you are seeing this in your web browser, save it as "hibuntu" to the "Downloads" folder.
 #             Usage: sudo bash ~/Downloads/hibuntu /dev/mmcblk1   [or /dev/sda for USB]
+
 script=hibuntu
 hostname=hibuntu
 username=me
@@ -18,8 +19,8 @@ echo -e "
 
 Chromebook/Hisense device model is: $hwid; Machine Arch is: $chromebook_arch
 
-Installing Ubuntu 14.04 LTS (trusty, port $ubuntu_arch, aka $hostname) minimal with network manager
-Usage for microSD: sudo $script /dev/mmcblk1; for USB: sudo $script /dev/sda
+Installing Ubuntu (something) LTS (trusty, port $ubuntu_arch, aka $hostname) minimal with network manager
+Usage for microSD: sudo $script /dev/mmcblk1 (or /dev/mmcblk0 if and _only if_ you are using the last Chrome OS firmware); for USB: sudo $script /dev/sda
 
                                     ****** Preparation Warning ****** 
 It is assumed that you have prepared the target disk (/dev/mmcblk1=microSD, /dev/sda=USB) by following exactly steps 1--8 from
@@ -31,8 +32,16 @@ This installation starts from step 9 for installing Ubuntu instead of Arch Linux
 if [ "$1" != "" ]; then
 	target_disk=$1
 	if test $target_disk = "/dev/mmcblk0"; then
-		echo -e "\nRefusing to install to internal disk $target_disk; exiting\n\a\a"
-		exit
+	
+		chk="`cgpt show -i 10 $target_disk | grep Unused`"
+		if [ "$chk" = "" ]; then
+			echo -e "\nPartition table does not look correct - is this the internal eMMC? \n\a\a"
+			exit
+		else
+			device="microSD card (for Chromebook firmware)"
+			kernp="${target_disk}p1"
+			rootp="${target_disk}p2"
+		fi		
 	elif test $target_disk = "/dev/mmcblk1"; then
 		device="microSD card"
 		kernp="${target_disk}p1"
