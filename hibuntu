@@ -101,7 +101,7 @@ kernname=vmlinux.kpart
 # use compatible version 3.14-20
 src=https://github.com/philoteer/Hibuntu/raw/master/vmlinux.kpart.tar.gz
 echo -e "\nDownloading kernel (5.8 MB), be patient ......"
-wget -q $src -O - | tar -vzx -C kern/boot | grep -m 1 $kernname | echo
+curl -L $src | tar -vzx -C kern/boot | grep -m 1 $kernname | echo
 if [ -f kern/boot/$kernname ]; then
   	echo -e "...... got it, kernel $kernname found ....\n"
 else
@@ -125,13 +125,13 @@ echo -e "Downloading Ubuntu $ubuntu_arch port..."
 tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/14.04/release/ubuntu-base-14.04.4-core-armhf.tar.gz"
 #tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.2-base-armhf.tar.gz"
 echo -e "Writing base OS files to $rootp (some MB)..."
-wget -O - $tar_file | tar xzvp -C rootfs
+curl -L $tar_file | tar xzvp -C rootfs
 echo -e "...base OS files done...\n"
 
 # needed for Hisense C11, may not be necessary for other models
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 echo -e "Downloading mwifiex modules ..."
-wget https://github.com/philoteer/Hibuntu/raw/master/wifimodules.tar.gz -O wifimodules.tar.gz
+curl https://github.com/philoteer/Hibuntu/raw/master/wifimodules.tar.gz -o wifimodules.tar.gz
 
 # install ubuntu-minimal by chroot
 
@@ -179,8 +179,7 @@ rm rootfs/hibuntu.sh
 #cp -ar /lib/modules/$syskern/* rootfs/lib/modules/$syskern/
 src=https://github.com/philoteer/Hibuntu/raw/master/modules.tar.gz
 echo -e "\nDownloading modules, be patient ......"
-wget $src
-mv modules.tar.gz rootfs/lib/modules
+curl $src -o rootfs/lib/modules/modules.tar.gz
 tar -xf rootfs/lib/modules/modules.tar.gz
 
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
