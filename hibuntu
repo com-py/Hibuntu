@@ -177,6 +177,8 @@ rm rootfs/hibuntu.sh
 #syskern=`uname -r`
 #mkdir -p rootfs/lib/modules/$syskern/
 #cp -ar /lib/modules/$syskern/* rootfs/lib/modules/$syskern/
+
+mkdir -p rootfs/lib/modules
 src=https://github.com/philoteer/Hibuntu/raw/master/modules.tar.gz
 echo -e "\nDownloading modules, be patient ......"
 curl $src -o rootfs/lib/modules/modules.tar.gz
