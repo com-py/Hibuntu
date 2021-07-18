@@ -131,7 +131,7 @@ echo -e "...base OS files done...\n"
 # needed for Hisense C11, may not be necessary for other models
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 echo -e "Downloading mwifiex modules ..."
-wget https://goo.gl/xANhPV -O wifimodules.tar.gz
+wget https://github.com/philoteer/Hibuntu/raw/master/wifimodules.tar.gz -O wifimodules.tar.gz
 
 # install ubuntu-minimal by chroot
 
