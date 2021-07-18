@@ -3,7 +3,13 @@
 DEV="/dev/mmcblk0"
 
 umount ${DEV}*
-fdisk ${DEV}
+
+fdisk ${DEV} <<EEOF
+g
+w
+
+EEOF
+
 cgpt create ${DEV}
 cgpt add -i 1 -t kernel -b 8192 -s 32768 -l Kernel -S 1 -T 5 -P 10 ${DEV}
 cgpt show ${DEV}
