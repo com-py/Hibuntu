@@ -54,12 +54,14 @@ if [ "$1" != "" ]; then
 		echo -e "\nUnknown target disk $target_disk\n\a\a"
 		exit
 	fi
+	
 	kstr="`cgpt show -i 1 $target_disk | grep kernel`"
 	dstr="`cgpt show -i 2 $target_disk | grep data`"
 	if [ "$kstr" = "" ] || [ "$dstr" = "" ]; then
 		echo -e "\nTarget disk $target_disk not prepared correctly; exiting\n\a\a"
 		exit
 	fi
+	
 	dsiz="`cgpt show -i 2 $target_disk | grep Label | awk '{print $2}'`"
 	size="`expr $dsiz \* 512 / 1000 / 1000 / 1000`"
 else
