@@ -7,8 +7,10 @@
 # If you are seeing this in your web browser, save it as "hibuntu" to the "Downloads" folder.
 #             Usage: sudo bash ~/Downloads/hibuntu /dev/mmcblk1   [or /dev/sda for USB]
 
+#first stage debootstrap expected.
 script=hibuntu
 hostname=hibuntu
+set -x
 
 if [ "$2" != "" ]; then
 	username=$2
@@ -75,6 +77,8 @@ else
 	exit
 fi
 
+DEV=$target_disk
+
 # check ok, ready to install
 
 echo -e "
@@ -89,7 +93,7 @@ echo -e "\nStopping powerd to keep display from timing out..."
 initctl stop powerd
 
 umount $target_disk*
-mkfs.ext4 -F $rootp
+#mkfs.ext4 -F $rootp
 cd /tmp
 mkdir kern
 mkdir kern/boot
@@ -121,10 +125,10 @@ read -p "Ready to proceed; Press [Enter] to continue ..."
 
 echo -e "Downloading Ubuntu $ubuntu_arch port..."
 #tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release/ubuntu-base-18.04.5-base-armhf.tar.gz"
-tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.6-base-armhf.tar.gz"
-echo -e "Writing base OS files to $rootp (some MB)..."
-curl -L $tar_file | tar xzvp -C rootfs
-echo -e "...base OS files done...\n"
+#tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.6-base-armhf.tar.gz"
+#echo -e "Writing base OS files to $rootp (some MB)..."
+#curl -L $tar_file | tar xzvp -C rootfs
+#echo -e "...base OS files done...\n"
 
 # install ubuntu-minimal by chroot
 
@@ -133,38 +137,80 @@ mount -o bind /dev     rootfs/dev
 mount -o bind /dev/pts rootfs/dev/pts
 mount -o bind /sys     rootfs/sys
 
+MNT=/tmp/rootfs
+chroot rootfs /debootstrap/debootstrap --second-stage
+
+cat > ${MNT}/etc/apt/sources.list <<EOF
+# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
+# newer versions of the distribution.
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic main restricted
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic main restricted
+
+## Major bug fix updates produced after the final release of the
+## distribution.
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main restricted
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main restricted
+
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team. Also, please note that software in universe WILL NOT receive any
+## review or updates from the Ubuntu security team.
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic universe
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic universe
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates universe
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic-updates universe
+
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team, and may not be under a free licence. Please satisfy yourself as to
+## your rights to use the software. Also, please note that software in
+## multiverse WILL NOT receive any review or updates from the Ubuntu
+## security team.
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic multiverse
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates multiverse
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic-updates multiverse
+
+## N.B. software from this repository may not have been tested as
+## extensively as that contained in the main release, although it includes
+## newer versions of some applications which may provide useful features.
+## Also, please note that software in backports WILL NOT receive any review
+## or updates from the Ubuntu security team.
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-backports main restricted universe multiverse
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic-backports main restricted universe multiverse
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu bionic partner
+# deb-src http://archive.canonical.com/ubuntu bionic partner
+
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-security main restricted
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-security universe
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-security multiverse
+# deb-src http://ports.ubuntu.com/ubuntu-ports/ bionic-security multiverse
+
+EOF
+
+cat > ${MNT}/etc/fstab <<EOF
+${DEV}p2 / ext4 errors=remount-ro 0 1
+EOF
+
 cp /etc/resolv.conf rootfs/etc/
+
+# Update the package list:
+chroot ${MNT} apt-get update
+# Install useful packages:
+chroot ${MNT} apt-get install -y cgpt vboot-utils \
+        vboot-kernel-utils
+chroot ${MNT} apt-get install -y wicd-daemon wicd-cli \
+   wicd-curses console-setup
+
+chroot ${MNT} passwd -d root
+
 echo -e "$hostname" > rootfs/etc/hostname
-echo -e "\n127.0.1.1       $hostname" >> rootfs/etc/hosts
-add_apt_repository_package='software-properties-common'
 
-# prepare shell script
-echo -e "apt-get -y update
-apt-get -y dist-upgrade
-apt-get -y install ubuntu-minimal apt-utils
-apt-get -y install network-manager
-apt-get -y install wget
-apt-get -y install $add_apt_repository_package
-add-apt-repository main
-add-apt-repository universe
-add-apt-repository restricted
-add-apt-repository multiverse 
-apt-get update
-if [ -f /usr/lib/lightdm/lightdm-set-defaults ]; then
-	/usr/lib/lightdm/lightdm-set-defaults --autologin $username
-fi
-useradd -m $username -s /bin/bash
-echo $username:root | chpasswd
-adduser $username adm
-adduser $username sudo" > rootfs/hibuntu.sh
-chmod a+x rootfs/hibuntu.sh
-
-echo -e "\n             Starting ubuntu-minimal install, get a cup of tea, will be a while...\n"
-chroot rootfs /bin/bash -c /hibuntu.sh
-
-echo -e "Wait 5 seconds..."
-sleep 5
-rm rootfs/hibuntu.sh
 
 # copy modules and firmwares from arch img
 mkdir -p rootfs/lib/modules
