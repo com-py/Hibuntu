@@ -56,8 +56,8 @@ It should take ~ 30 min, and done!
 After reboot, press `Ctrl-U` to boot from the external device. 
 If it beeps, just power off and on again. Make sure your device is the only one plugged in.
 ```
-Username:  me
-Password:  root
+Username:  root
+Password:  (empty)
 ```
 To set up wireless after the first login, use these commands to scan, connect, 
 and check connections; it's handy to jot these down:
