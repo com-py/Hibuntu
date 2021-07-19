@@ -6,6 +6,7 @@
 #
 # If you are seeing this in your web browser, save it as "hibuntu" to the "Downloads" folder.
 #             Usage: sudo bash ~/Downloads/hibuntu /dev/mmcblk1   [or /dev/sda for USB]
+#debootstrapping scripts are copied from https://wiki.debian.org/InstallingDebianOn/Asus/C201
 
 #first stage debootstrap expected.
 script=hibuntu
