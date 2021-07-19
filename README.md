@@ -1,5 +1,6 @@
 # Original Project: https://github.com/com-py/Hibuntu
 # Modified to run on the latest ChromeOS firmware
+
 -----------------------------------------------------------------------------------------------------------------------
 # Hibuntu
 ## Installing Ubuntu on Hisense C11 ARM Chromebook
@@ -7,7 +8,7 @@
 ### Instructions:
 
 The script automates installing Ubuntu on Rockchip ARM chromebooks like the Hisense C11.
-It is similar to ChrUbuntu but uses Arch Linux ARM kernel and Ubuntu 14.04 LTS (trusty).
+It is similar to ChrUbuntu but uses Arch Linux ARM kernel and Ubuntu 18.04 LTS.
 Either a microSD or USB stick can be used. I recommend the microSD option (16 or 32 GB)
 because it fits flush on the Hisense C11 and can be very fast. You can have a dual-boot, full Linux
 system on a nice, little and light machine like the Hisense C11.
@@ -18,7 +19,16 @@ system on a nice, little and light machine like the Hisense C11.
   	
 https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 	
-By the way, if you want Arch Linux, do no more. I prefer Ubuntu. 
+After that, execute the first stage debootstrap by doing:
+```
+	mkfs.ext4 ${ROOTFS}
+	mkdir /tmp/mnt
+	mount ${ROOTFS} /tmp/mnt
+	debootstrap --arch=armhf --foreign bionic /tmp/mnt http://ports.ubuntu.com/ubuntu-ports
+	sync
+	umount ${ROOTFS}
+```
+where ${ROOTFS} is the partition where the Ubuntu rootfs will be installed (like /dev/mmcblk0p2).
 
 Next, make sure the device you want Ubuntu on is the only external device plugged in.
 Power the chromebook off then on, press `Ctrl-D` at OS verification screen, do not sign in yet.
