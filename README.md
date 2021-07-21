@@ -1,14 +1,14 @@
 # Original Project: https://github.com/com-py/Hibuntu
 # Modified to run on the latest ChromeOS firmware
-
+# Installs the mainline kernel, extracted from ALARM project, with Debian Buster userland
 -----------------------------------------------------------------------------------------------------------------------
 # Hibuntu
-## Installing Ubuntu on Hisense C11 ARM Chromebook
+## Installing Debian on Hisense C11 ARM Chromebook
 
 ### Instructions:
 
-The script automates installing Ubuntu on Rockchip ARM chromebooks like the Hisense C11.
-It is similar to ChrUbuntu but uses Arch Linux ARM kernel and Ubuntu 18.04 LTS.
+The script automates installing Debian on Rockchip ARM chromebooks like the Hisense C11 (Veyron-jerry or similar platforms).
+It is similar to ChrUbuntu but uses Arch Linux ARM kernel and Debian 10.
 Either a microSD or USB stick can be used. I recommend the microSD option (16 or 32 GB)
 because it fits flush on the Hisense C11 and can be very fast. You can have a dual-boot, full Linux
 system on a nice, little and light machine like the Hisense C11.
@@ -24,13 +24,13 @@ After that, execute the first stage debootstrap by doing (*may not work on Chrom
 	mkfs.ext4 ${ROOTFS}
 	mkdir /tmp/mnt
 	mount ${ROOTFS} /tmp/mnt
-	debootstrap --arch=armhf --foreign bionic /tmp/mnt http://ports.ubuntu.com/ubuntu-ports
+	debootstrap --arch=armhf --foreign buster /tmp/mnt http://ports.ubuntu.com/ubuntu-ports
 	sync
 	umount ${ROOTFS}
 ```
-where ${ROOTFS} is the partition where the Ubuntu rootfs will be installed (like /dev/mmcblk0p2).
+where ${ROOTFS} is the partition where the  rootfs will be installed (like /dev/mmcblk0p2).
 
-Next, make sure the device you want Ubuntu on is the only external device plugged in.
+Next, make sure the device you want the OS to be installed on is the only external device plugged in.
 Power the chromebook off then on, press `Ctrl-D` at OS verification screen, do not sign in yet.
 
 Choose either 2a or 2b. I recommend 2a because it reduces ChromeOS interference.
