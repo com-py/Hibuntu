@@ -102,12 +102,6 @@ mkdir rootfs
 mount  $rootp rootfs
 echo -e "mount  $rootp rootfs"
 
-Up next are 3 stages: ubuntu base, base update, and ubuntu-minimal+network manager
-Depending on internet and $device speeds, it can take anywhere from 30 min to 1 hour+.
-So sit back, relax, and ignore harmless Locale warnings.\n"
-
-read -p "Ready to proceed; Press [Enter] to continue ..."
-
 echo -e "Downloading Ubuntu $ubuntu_arch port..."
 #tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release/ubuntu-base-18.04.5-base-armhf.tar.gz"
 #tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.6-base-armhf.tar.gz"
