@@ -135,7 +135,8 @@ chroot ${MNT} apt-get update
 # Install useful packages:
 chroot ${MNT} apt-get install -y cgpt vboot-utils \
         vboot-kernel-utils
-chroot ${MNT} apt-get install -y fbterm nmcli
+#chroot ${MNT} apt-get install -y fbterm
+chroot ${MNT} apt-get install -y network-manager
 
 chroot ${MNT} passwd -d root
 
