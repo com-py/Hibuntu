@@ -208,7 +208,7 @@ echo -e "Flashing kernel to $kernp..."
 kernname=vmlinux.kpart
 dd if=rootfs/arch_rootfs/boot/$kernname  of=$kernp
 echo -e "
-...kernel flashed successfully.
+...kernel flashed successfully."
 
 echo -e "\n copying modules"
 cp -ar rootfs/arch_rootfs/lib/modules/* rootfs/lib/modules/
