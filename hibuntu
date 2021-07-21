@@ -242,7 +242,8 @@ chroot rootfs /bin/bash -c "depmod 3.14.0-26-ARCH"
 #tar xf wifimodules.tar.gz -C rootfs/
 
 # change default brightness, insert before last line
-sed -i '$i echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness' rootfs/etc/rc.local
+# TODO: fix (sysvinit -> systemd)
+#sed -i '$i echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness' rootfs/etc/rc.local
 
 # load wireless modules; order important
 # TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
