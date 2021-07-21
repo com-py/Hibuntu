@@ -101,22 +101,6 @@ mkdir kern/boot
 mkdir rootfs
 mount  $rootp rootfs
 echo -e "mount  $rootp rootfs"
-kernname=vmlinux.kpart
-src=https://github.com/philoteer/Hibuntu/raw/master/vmlinux.kpart.tar.gz
-echo -e "\nDownloading kernel (5.8 MB), be patient ......"
-curl -L $src | tar -vzx -C kern/boot | grep -m 1 $kernname | echo
-if [ -f kern/boot/$kernname ]; then
-  	echo -e "...... got it, kernel $kernname found ....\n"
-else
-  	echo -e 'Failed kernel download. Please check source and try again; exiting\n'
-  	exit
-fi
-
-# flash kernel
-echo -e "Flashing kernel to $kernp..."
-dd if=kern/boot/$kernname  of=$kernp
-echo -e "
-...kernel flashed successfully.
 
 Up next are 3 stages: ubuntu base, base update, and ubuntu-minimal+network manager
 Depending on internet and $device speeds, it can take anywhere from 30 min to 1 hour+.
@@ -205,8 +189,7 @@ chroot ${MNT} apt-get update
 # Install useful packages:
 chroot ${MNT} apt-get install -y cgpt vboot-utils \
         vboot-kernel-utils
-chroot ${MNT} apt-get install -y wicd-daemon wicd-cli \
-   wicd-curses console-setup
+chroot ${MNT} apt-get install -y xubuntu-desktop 
 
 chroot ${MNT} passwd -d root
 
@@ -217,7 +200,7 @@ echo -e "$hostname" > rootfs/etc/hostname
 mkdir -p rootfs/lib/modules
 mkdir -p rootfs/lib/firmware
 mkdir -p rootfs/arch_rootfs
-src=http://mirror.nus.edu.sg/archlinux-arm/os/ArchLinuxARM-veyron-latest.tar.gz
+src=http://mirror.nus.edu.sg/archlinux-arm/os/ArchLinuxARM-armv7-chromebook-latest.tar.gz
 tgt=rootfs/arch_rootfs.tar.gz
 
 echo -e "\nDownloading arch rootfs, be patient ......"
@@ -226,31 +209,23 @@ echo -e "\nuntarring arch rootfs"
 tar -xf ${tgt} -C rootfs/arch_rootfs/
 rm  ${tgt}
 
+# flash kernel
+echo -e "Flashing kernel to $kernp..."
+kernname=vmlinux.kpart
+dd if=rootfs/arch_rootfs/boot/$kernname  of=$kernp
+echo -e "
+...kernel flashed successfully.
+
 echo -e "\n copying modules"
 cp -ar rootfs/arch_rootfs/lib/modules/* rootfs/lib/modules/
 cp -ar rootfs/arch_rootfs/lib/firmware/* rootfs/lib/firmware/
 rm -rf rootfs/arch_rootfs
-gunzip -r rootfs/lib/modules/3.14.0-26-ARCH/kernel/
-chroot rootfs /bin/bash -c "depmod 3.14.0-26-ARCH"
-
-# copy firmwares
-# TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-#echo -e "Downloading mwifiex modules ..."
-#curl -L https://github.com/philoteer/Hibuntu/raw/master/wifimodules.tar.gz -o wifimodules.tar.gz
-
-#cp -ar /lib/firmware/* rootfs/lib/firmware/
-#tar xf wifimodules.tar.gz -C rootfs/
+gunzip -r rootfs/lib/modules/5.5.7-1-ARCH/kernel/
+chroot rootfs /bin/bash -c "depmod 5.5.7-1-ARCH"
 
 # change default brightness, insert before last line
 # TODO: fix (sysvinit -> systemd)
 #sed -i '$i echo 50 > /sys/devices/backlight.20/backlight/backlight.20/brightness' rootfs/etc/rc.local
-
-# load wireless modules; order important
-# TODO Wifi TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-#sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/cfg80211.ko' rootfs/etc/rc.local
-#sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex.ko' rootfs/etc/rc.local
-#sed -i '$i insmod /lib/modules/3.14.0-20-ARCH/mwifiex/mwifiex_sdio.ko' rootfs/etc/rc.local
-
 
 echo -e "
 
