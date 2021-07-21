@@ -24,7 +24,7 @@ After that, execute the first stage debootstrap by doing (*may not work on Chrom
 	mkfs.ext4 ${ROOTFS}
 	mkdir /tmp/mnt
 	mount ${ROOTFS} /tmp/mnt
-	debootstrap --arch=armhf --foreign buster /tmp/mnt http://ports.ubuntu.com/ubuntu-ports
+	debootstrap --arch=armhf --foreign buster /tmp/mnt http://http.debian.net/debian
 	sync
 	umount ${ROOTFS}
 ```
