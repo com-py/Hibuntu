@@ -137,14 +137,26 @@ echo -e "$hostname" > rootfs/etc/hostname
 mkdir -p rootfs/lib/modules
 mkdir -p rootfs/lib/firmware
 mkdir -p rootfs/arch_rootfs
-src=http://mirror.nus.edu.sg/archlinux-arm/os/ArchLinuxARM-armv7-chromebook-latest.tar.gz
-tgt=rootfs/arch_rootfs.tar.gz
 
-echo -e "\nDownloading arch rootfs, be patient ......"
+# download, extract kernel
+src=http://tardis.tiny-vps.com/aarm/packages/l/linux-armv7/linux-armv7-5.10.13-1-armv7h.pkg.tar.xz
+tgt=rootfs/kernel.tar.gz
 curl -L $src -o ${tgt}
-echo -e "\nuntarring arch rootfs"
-tar -xf ${tgt} -C rootfs/arch_rootfs/
-rm  ${tgt}
+tar -xf ${tgt} -C rootfs/arch_rootfs
+rm ${tgt}
+
+echo -e "\nDownloading the kernel and firmwares......"
+src=http://tardis.tiny-vps.com/aarm/packages/l/linux-armv7-chromebook/linux-armv7-chromebook-5.10.13-1-armv7h.pkg.tar.xz
+tgt=rootfs/kernel_kpart.tar.gz
+curl -L $src -o ${tgt}
+tar -xf ${tgt} -C rootfs/arch_rootfs
+rm ${tgt}
+
+src=http://tardis.tiny-vps.com/aarm/packages/l/linux-firmware/linux-firmware-20210208.b79d239-1-any.pkg.tar.xz
+tgt=rootfs/firmware.tar.gz
+curl -L $src -o ${tgt}
+tar -xf ${tgt} -C rootfs/arch_rootfs
+rm ${tgt}
 
 # flash kernel
 echo -e "Flashing kernel to $kernp..."
@@ -154,11 +166,12 @@ echo -e "
 ...kernel flashed successfully."
 
 echo -e "\n copying modules"
-cp -ar rootfs/arch_rootfs/lib/modules/* rootfs/lib/modules/
-cp -ar rootfs/arch_rootfs/lib/firmware/* rootfs/lib/firmware/
+cp -ar rootfs/arch_rootfs/boot/* rootfs/boot/
+cp -ar rootfs/arch_rootfs/usr/lib/* rootfs/lib/
+cp -ar rootfs/arch_rootfs/usr/share/* rootfs/usr/share/
 rm -rf rootfs/arch_rootfs
-gunzip -r rootfs/lib/modules/5.5.7-1-ARCH/kernel/
-chroot rootfs /bin/bash -c "depmod 5.5.7-1-ARCH"
+gunzip -r rootfs/lib/modules/5.10.13-1-ARCH/kernel/
+chroot rootfs /bin/bash -c "depmod 5.10.13-1-ARCH"
 
 # change default brightness, insert before last line
 # TODO: fix (sysvinit -> systemd)
@@ -176,9 +189,7 @@ Password:  root
 To set up wireless after login, use these commands to scan, connect, and check connections: 
                              __________________________________
  ==========================  Please jot this down for reference  =========================
-|    nmcli dev wifi                                                                       |
-|    sudo nmcli dev wifi con \"your_net ssid\" password \"your_net_password\"  name \"My wifi\" |
-|    nmcli dev status                                                                     |
+|    nmtli            
  =========================================================================================
 
 Once you have a connection, you can add more stuff. 
