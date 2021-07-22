@@ -1,4 +1,4 @@
-# Script to install Ubuntu trusty (14.04 LTS) on Hisense C11 chromebook
+# Script to install Debian Buster on Hisense C11 chromebook
 # All rights reserved by the author
 # https://github.com/com-py/Hibuntu
 # Credit: based on ChrUnbutu and Arch Linux ARM
@@ -94,7 +94,6 @@ echo -e "\nStopping powerd to keep display from timing out..."
 initctl stop powerd
 
 umount $target_disk*
-#mkfs.ext4 -F $rootp
 cd /tmp
 mkdir kern
 mkdir kern/boot
@@ -102,15 +101,7 @@ mkdir rootfs
 mount  $rootp rootfs
 echo -e "mount  $rootp rootfs"
 
-echo -e "Downloading Ubuntu $ubuntu_arch port..."
-#tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release/ubuntu-base-18.04.5-base-armhf.tar.gz"
-#tar_file="http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.6-base-armhf.tar.gz"
-#echo -e "Writing base OS files to $rootp (some MB)..."
-#curl -L $tar_file | tar xzvp -C rootfs
-#echo -e "...base OS files done...\n"
-
-# install ubuntu-minimal by chroot
-
+# install debian by chroot
 mount -o bind /proc    rootfs/proc
 mount -o bind /dev     rootfs/dev
 mount -o bind /dev/pts rootfs/dev/pts
@@ -141,7 +132,6 @@ chroot ${MNT} apt-get install -y network-manager
 chroot ${MNT} passwd -d root
 
 echo -e "$hostname" > rootfs/etc/hostname
-
 
 # copy modules and firmwares from arch img
 mkdir -p rootfs/lib/modules
