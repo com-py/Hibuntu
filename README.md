@@ -1,6 +1,6 @@
 # Original Project: https://github.com/com-py/Hibuntu
 # Modified to run on the latest ChromeOS firmware
-# Installs the mainline kernel, extracted from ALARM project, with Debian Buster userland
+# Installs the mainline kernel, extracted from ALARM project, with Debian Bullseye userland
 -----------------------------------------------------------------------------------------------------------------------
 # Hibuntu
 ## Installing Debian on Hisense C11 ARM Chromebook
@@ -24,7 +24,7 @@ After that, execute the first stage debootstrap by doing (*you may need to use a
 	mkfs.ext4 ${ROOTFS}
 	mkdir /tmp/mnt
 	mount ${ROOTFS} /tmp/mnt
-	debootstrap --arch=armhf --foreign buster /tmp/mnt http://http.debian.net/debian
+	debootstrap --arch=armhf --foreign bullseye /tmp/mnt http://http.debian.net/debian
 	sync
 	umount ${ROOTFS}
 ```
