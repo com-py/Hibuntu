@@ -19,7 +19,7 @@ system on a nice, little and light machine like the Hisense C11.
   	
 https://archlinuxarm.org/platforms/armv7/rockchip/hisense-chromebook-c11
 	
-After that, execute the first stage debootstrap by doing (*may not work on Chromebook; you may need to use a Desktop PC with Debian or Ubuntu):
+After that, execute the first stage debootstrap by doing (*you may need to use a Desktop PC with Debian or Ubuntu, if do not have debootstrap on your chromebook):
 ```
 	mkfs.ext4 ${ROOTFS}
 	mkdir /tmp/mnt
