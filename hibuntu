@@ -111,8 +111,8 @@ MNT=/tmp/rootfs
 chroot rootfs /debootstrap/debootstrap --second-stage
 
 cat > ${MNT}/etc/apt/sources.list <<EOF
-deb http://http.debian.net/debian buster main non-free contrib
-deb-src http://http.debian.net/debian buster main non-free contrib
+deb http://http.debian.net/debian bullseye main non-free contrib
+deb-src http://http.debian.net/debian bullseye main non-free contrib
 EOF
 
 cat > ${MNT}/etc/fstab <<EOF
