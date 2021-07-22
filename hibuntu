@@ -189,7 +189,7 @@ Password:  root
 To set up wireless after login, use these commands to scan, connect, and check connections: 
                              __________________________________
  ==========================  Please jot this down for reference  =========================
-|    nmtli            
+|    nmtui            
  =========================================================================================
 
 Once you have a connection, you can add more stuff. 
